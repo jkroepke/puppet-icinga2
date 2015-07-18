@@ -40,6 +40,13 @@ apply Service "<%= @object_servicename %>" <%= @apply %> {
   <%- if @vars.any? -%>
   vars += <%= scope.function_icinga2_config_value([@vars]) %>
   <%- end -%>
+  <%- if @vars_raw.any? -%>
+  vars += {
+    <% vars_raw.keys.sort.each do |key| -%>
+    "<%= key %>" = <%= vars_raw[key] %>
+    <% end -%>
+  }
+  <%- end -%>
   <%- if @max_check_attempts -%>
   max_check_attempts = <%= @max_check_attempts %>
   <%- end -%>

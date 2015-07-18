@@ -20,6 +20,7 @@ define icinga2::object::apply_service (
   $command_endpoint = undef,
   $groups = [],
   $vars = {},
+  $vars_raw = {},
   $check_command = undef,
   $max_check_attempts = undef,
   $check_period = undef,
