@@ -40,7 +40,10 @@ apply Service "<%= @object_servicename %>" <%= @apply %> {
   <%- if @vars.any? -%>
   vars += <%= scope.function_icinga2_config_value([@vars]) %>
   <%- end -%>
-  <%- if @vars_raw.any? -%>
+  <%- if @vars_raw.string? -%>
+  vars += <%= @vars_raw %>
+  <%- end -%>
+  <%- if @vars_raw.hash? -%>
   vars += {
     <% vars_raw.keys.sort.each do |key| -%>
     "<%= key %>" = <%= vars_raw[key] %>
