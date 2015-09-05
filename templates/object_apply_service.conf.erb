@@ -45,7 +45,7 @@ apply Service "<%= @object_servicename %>" <%= @apply %> {
   <%- elsif @vars_raw.is_a?(Hash) and @vars_raw.any? -%>
   vars += {
   <% @vars_raw.keys.sort.each do |key| -%>
-   "<%= key %>" = <%= vars_raw[key] %>
+   "<%= key %>" = <%= @vars_raw[key] %>
    <% end -%>
   }
   <%- end -%>
