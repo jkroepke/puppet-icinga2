@@ -11,6 +11,8 @@
 
 define icinga2::object::notification (
   $object_notificationname = $name,
+  $is_template             = false,
+  $template_to_import      = undef,
   $command                 = undef,
   $host_name               = undef,
   $service_name            = undef,
@@ -33,6 +35,7 @@ define icinga2::object::notification (
 
   #Do some validation of the class' parameters:
   validate_string($object_notificationname)
+  validate_bool($is_template)
   validate_string($command)
   if $host_name {
     validate_string($host_name)
@@ -45,7 +48,7 @@ define icinga2::object::notification (
   validate_array($user_groups)
   validate_hash($times)
   if $interval {
-    validate_re($interval, '^\d$')
+    validate_re($interval, '^\d+m?$')
   }
   if $period {
     validate_string($period)

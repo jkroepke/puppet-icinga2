@@ -17,17 +17,17 @@ define icinga2::nrpe::command (
 ) {
   #Do some validation of the class' parameters:
   validate_string($command_name)
+  validate_string($nrpe_plugin_args)
   validate_string($nrpe_plugin_libdir)
   validate_string($nrpe_plugin_name)
-  validate_string($nrpe_plugin_args)
 
   file { "/etc/nagios/nrpe.d/${command_name}.cfg":
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
     content => template('icinga2/nrpe_command.cfg.erb'),
-    require => Package[$::icinga2::nrpe::icinga2_client_packages],
-    notify  => Service[$::icinga2::nrpe_daemon_name],
+    require => Anchor['icinga2::nrpe::packages'],
+    notify  => Service['nrpe'],
   }
 }
 
