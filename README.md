@@ -29,7 +29,7 @@ Table of Contents
 [Overview](id:overview)
 --------
 
-This module installs and configures the [Icinga 2 monitoring system](https://www.icinga.org/icinga2/). It can also install and configure [NRPE](http://exchange.nagios.org/directory/Addons/Monitoring-Agents/NRPE--2D-Nagios-Remote-Plugin-Executor/details) on client systems that are being monitored by an Icinga 2 server.
+This module installs and configures the [Icinga 2 monitoring system](https://www.icinga.org/icinga2/).
 
 [Module Description](id:module-description)
 -------------------
@@ -47,7 +47,7 @@ This module requires the [Puppet Labs stdlib module](https://github.com/puppetla
 
 For Ubuntu systems, this module requires the [Puppet Labs apt module](https://github.com/puppetlabs/puppetlabs-apt).
 
-On EL-based systems (CentOS, Red Hat Enterprise Linux, Fedora, etc.), the [EPEL package repository](https://fedoraproject.org/wiki/EPEL) is required. You can also use the [icinga2::nrpe class](#nrpe-usage) to set up NRPE on CentOS 5. It is discouraged to set up Icinga2 Server on this old of a distribution. You are encouraged to use at least CentOS 6 or higher.
+On EL-based systems (CentOS, Red Hat Enterprise Linux, Fedora, etc.), the [EPEL package repository](https://fedoraproject.org/wiki/EPEL) is required.
 
 ####Note for RedHat
 
@@ -56,7 +56,7 @@ If you are using RedHat Satellite server, set
    $manage_repos = false
 </pre>
 
-in `icinga2::server` class and make sure, you have a channel set up with the contents of the icinga2 repository and the needed packages from EPEL. If you leave it at true, the EPEL repository will be used directly.
+in `icinga2` class and make sure, you have a channel set up with the contents of the icinga2 repository and the needed packages from EPEL. If you leave it at true, the EPEL repository will be used directly.
 
 If you would like to use the `icinga2::object` defined types as [exported resources](https://docs.puppetlabs.com/guides/exported_resources.html), you'll need to have your Puppet master set up with PuppetDB. See the Puppet Labs documentation for more info: [Docs: PuppetDB](https://docs.puppetlabs.com/puppetdb/)
 
@@ -134,28 +134,28 @@ icinga2::conf { 'baseservices':
 
 To install Icinga 2, first set up a MySQL or Postgres database.
 
-Once the database is set up, use the `icinga2::server` class with the `db_` database connection parameters:
+Once the database is set up, use the `icinga2` class with the `db_` database connection parameters:
 
 <pre>
 #Install Icinga 2:
-class { 'icinga2::server':
-  server_db_type => 'pgsql',
+class { 'icinga2':
+  db_type => 'pgsql',
   db_host => 'localhost',
   db_port => '5432',
   db_name => 'icinga2_data',
   db_user => 'icinga2',
-  db_password => 'password',
+  db_pass => 'password',
 }
 </pre>
 
-When the `server_db_type` parameter is set, the right IDO database connection packages are automatically installed and the database schema is loaded.
+When the `db_type` parameter is set, the right IDO database connection packages are automatically installed and the database schema is loaded.
 
 **Note:** For production use, you'll probably want to get the database password via a [Hiera lookup](http://docs.puppetlabs.com/hiera/1/puppet.html) so the password isn't sitting in your site manifests in plain text:
 
 <pre>
 #Install Icinga 2:
-class { 'icinga2::server':
-  server_db_type => 'pgsql',
+class { 'icinga2':
+  db_type => 'pgsql',
   db_host => 'localhost',
   db_port => '5432',
   db_name => 'icinga2_data',
@@ -164,7 +164,7 @@ class { 'icinga2::server':
 }
 </pre>
 
-You'll also need to add an IDO connection object that has the same database settings and credentials as what you entered for your `icinga2::server` class.
+You'll also need to add an IDO connection object that has the same database settings and credentials as what you entered for your `icinga2` class.
 
 You can do this by applying either the `icinga2::object::idomysqlconnection` or `icinga2::object::idopgsqlconnection` class to your Icinga 2 server, depending on which database you're using.
 
@@ -179,7 +179,6 @@ icinga2::object::idopgsqlconnection { 'postgres_connection':
    user             => 'icinga2',
    password         => 'password',
    database         => 'icinga2_data',
-   categories => ['DbCatConfig', 'DbCatState', 'DbCatAcknowledgement', 'DbCatComment', 'DbCatDowntime', 'DbCatEventHandler' ],
 }
 </pre>
 
@@ -187,11 +186,11 @@ In a future version, the module will automatically create the IDO connection obj
 
 **Using the Debmon repository on Debian systems**
 
-If you would like to use the [Debmon repository](http://debmon.org/packages) for Debian 7 systems, set `use_debmon_repo` to true when you call the `icinga2::server` class:
+If you would like to use the [Debmon repository](http://debmon.org/packages) for Debian 7 systems, set `use_debmon_repo` to true when you call the `icinga2` class:
 
 <pre>
-class { 'icinga2::server':
-  server_db_type => 'pgsql',
+class { 'icinga2':
+  db_type => 'pgsql',
   # default to false
   use_debmon_repo => true,
   db_host => 'localhost'
@@ -202,27 +201,12 @@ class { 'icinga2::server':
 }
 </pre>
 
-**NRPE and Nagios plugin packages**
-
-If you will be installing NRPE or the Nagios plugins packages with the `icinga2::nrpe` class on a node that also has the `icinga2::server` class applied, be sure to set the `$server_install_nagios_plugins` parameter in your call to `icinga2::server` to `false`:
-
-<pre>
-#Install Icinga 2:
-class { 'icinga2::server':
-  ...
-  server_install_nagios_plugins => false,
-  ...
- }
-</pre>
-
-This will stop the `icinga2::server` class from trying to install the plugins packages and will prevent a duplicate resource error, since the `icinga2::nrpe` class will already be installing the plugin packages.
-
 **`mail` binaries**
 
 If you would like to install packages to make a `mail` command binary available so that Icinga 2 can send out email notifications, set the `install_mail_utils_package` parameter to **true**:
 
 <pre>
-  class { 'icinga2::server':
+  class { 'icinga2':
     ...
     install_mail_utils_package => true,
     ...
@@ -240,58 +224,16 @@ The parameters should be given as arrays of single-quoted strings.
 **Note:** If a feature is listed in both the `server_enabled_features` and `server_disabled_features` arrays, the feature will be **disabled**.
 
 ````
-class { 'icinga2::server':
+class { 'icinga2':
   ...
   server_enabled_features  => ['checker','notification'],
   server_disabled_features => ['graphite','livestatus'],
 }
 ````
 
-###NRPE usage
-
-To install NRPE and allow the local machine and Icinga 2 servers (or Icinga 1 or plain old Nagios servers) with various IP addresess to connect:
-
-<pre>
-class { 'icinga2::nrpe':
-  nrpe_allowed_hosts => ['10.0.1.79', '10.0.1.80', '10.0.1.85', '127.0.0.1'],
-}
-</pre>
-
-By default the NRPE daemon will not allow clients to specify arguments to the commands that are executed.  To enable NRPE to allow client argument processing you can call the icinga2::nrpe class with the **allow_command_argument_processing** parameter.
-
-Valid parameter values are: 0=do not allow arguments, 1=allow command arguments
-
-**WARNING! - ENABLING THIS OPTION IS A SECURITY RISK!**
-
-````
-class { 'icinga2::nrpe':
-  allow_command_argument_processing => 1,
-}
-````
-
-If you'd like to purge NRPE config files that are not managed by Puppet you can set $nrpe_purge_unmanaged to true.
-
-```
-class { 'icinga2::nrpe':
-  nrpe_purge_unmanaged => true,
-}
-```
-
-**Note:** If you would like to install NRPE on a node that also has the `icinga2::server` class applied, be sure to set the `$server_install_nagios_plugins` parameter in your call to `icinga2::server` to `false`:
-
-<pre>
-#Install Icinga 2:
-class { 'icinga2::server':
-  server_db_type => 'pgsql',
-  server_install_nagios_plugins => false,
- }
-</pre>
-
-This will stop the `icinga2::server` class from trying to install the plugins pacakges, since the `icinga2::nrpe` class will already be installing them and will prevent a resulting duplicate resource error.
-
 ### Check Plugins
 
-Agents installed on nodes (such as NRPE) that Icinga is performing active checks against often require additional or custom check plugins. In order to deploy these check pluings on a node you can call the checkplugin defined resource.
+Agents installed on nodes that Icinga is performing active checks against often require additional or custom check plugins. In order to deploy these check pluings on a node you can call the checkplugin defined resource.
 
 The checkplugin defined resource can distribute files via both content (templates) and source (files).  By default the checkpluin resource will assume your distribution method is content (template) and that your template resides in the icinga2 module
 
@@ -349,7 +291,7 @@ The default file mode is controlled by the `target_file_mode` parameter. It defa
 
 ####Purging unmanaged object files
 
-The `purge_unmanaged_object_files` parameter of the `icinga2::server` class controls whether object files in `/etc/icinga2/objects` that are not managed by Puppet get purged. It defaults to `false`.
+The `purge_unmanaged_object_files` parameter of the `icinga2` class controls whether object files in `/etc/icinga2/objects` that are not managed by Puppet get purged. It defaults to `false`.
 
 **Note:** This will purge unmanaged subdirectories as well as unmanaged files!
 
@@ -779,7 +721,6 @@ icinga2::object::idomysqlconnection { 'mysql_connection':
    user             => 'icinga2',
    password         => 'password',
    database         => 'icinga2_data',
-   categories       => ['DbCatConfig', 'DbCatState', 'DbCatAcknowledgement', 'DbCatComment', 'DbCatDowntime', 'DbCatEventHandler' ],
 }
 </pre>
 
@@ -787,7 +728,6 @@ Some parameters require specific data types to be given:
 
 * `port`: needs to be a [number](https://docs.puppetlabs.com/puppet/latest/reference/lang_datatypes.html#numbers), not a quoted string
 * `cleanup`: If changed from the default value, needs to be given as a [hash](https://docs.puppetlabs.com/puppet/latest/reference/lang_datatypes.html#hashes) with the keys being the cleanup item names and the maximum age as a number (not a quoted string); default values are set to the default values shown in the [Cleanup Items section of the IdomysqlConnection object documentation](http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/configuring-icinga2#objecttype-idomysqlconnection)
-* `categories`: needs to be given as an [array](https://docs.puppetlabs.com/puppet/latest/reference/lang_datatypes.html#arrays) with [single-quoted strings](https://docs.puppetlabs.com/puppet/latest/reference/lang_datatypes.html#single-quoted-strings) as the elements; default values are set to the default values shown in the [Data Categories section of the IdomysqlConnection object documentation](http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/configuring-icinga2#objecttype-idomysqlconnection)
 
 All other parameters are given as [single-quoted strings](https://docs.puppetlabs.com/puppet/latest/reference/lang_datatypes.html#single-quoted-strings).
 
@@ -812,8 +752,6 @@ icinga2::object::idopgsqlconnection { 'postgres_connection':
    user             => 'icinga2',
    password         => 'password',
    database         => 'icinga2_data',
-
-   categories => ['DbCatConfig', 'DbCatState', 'DbCatAcknowledgement', 'DbCatComment', 'DbCatDowntime', 'DbCatEventHandler' ],
 }
 </pre>
 
@@ -821,7 +759,6 @@ Some parameters require specific data types to be given:
 
 * `port`: needs to be a [number](https://docs.puppetlabs.com/puppet/latest/reference/lang_datatypes.html#numbers), not a quoted string
 * `cleanup`: If changed from the default value, needs to be given as a [hash](https://docs.puppetlabs.com/puppet/latest/reference/lang_datatypes.html#hashes) with the keys being the cleanup item names and the maximum age as a number (not a quoted string); default values are set to the default values shown in the [Cleanup Items section of the IdopgsqlConnection object documentation](http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/configuring-icinga2#objecttype-idopgsqlconnection)
-* `categories`: needs to be given as an [array](https://docs.puppetlabs.com/puppet/latest/reference/lang_datatypes.html#arrays) with [single-quoted strings](https://docs.puppetlabs.com/puppet/latest/reference/lang_datatypes.html#single-quoted-strings) as the elements; default values are set to the default values shown in the [Data Categories section of the IdopgsqlConnection object documentation](http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/configuring-icinga2#objecttype-idopgsqlconnection)
 
 All other parameters are given as [single-quoted strings](https://docs.puppetlabs.com/puppet/latest/reference/lang_datatypes.html#single-quoted-strings).
 
