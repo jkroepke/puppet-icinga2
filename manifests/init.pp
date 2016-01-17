@@ -25,6 +25,7 @@ class icinga2 (
   $use_debmon_repo                        = $::icinga2::params::use_debmon_repo,
   $install_plugins                        = true,
   $install_mailutils                      = true,
+  $package_ensure                         = installed,
   $purge_configs                          = true,
   $purge_confd                            = false,
   $plugin_packages                        = $::icinga2::params::plugin_packages,
@@ -36,6 +37,7 @@ class icinga2 (
   $db_schema_mysql                        = $::icinga2::params::db_schema_mysql,
   $db_schema_pgsql                        = $::icinga2::params::db_schema_pgsql,
   $pid_file                               = $::icinga2::params::pid_file,
+  $restart_cmd                            = $::icinga2::params::restart_cmd,
 ) inherits ::icinga2::params {
   # TODO: temporary parameter until we provide some default templates
   validate_bool($purge_confd)

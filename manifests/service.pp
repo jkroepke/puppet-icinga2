@@ -17,13 +17,14 @@ class icinga2::service {
 
   exec { 'icinga2 daemon config test':
     command => 'icinga2 daemon -C',
-    onlyif  => "test '${config_stamp}' -nt '${::icinga2::pid_file}'",
+    onlyif  => "test ! -e '${::icinga2::pid_file}' || test '${config_stamp}' -nt '${::icinga2::pid_file}'",
   } ~>
 
   service { 'icinga2':
     ensure     => running,
     enable     => true,
     hasrestart => true,
+    restart    => $::icinga2::restart_cmd,
   }
 }
 
