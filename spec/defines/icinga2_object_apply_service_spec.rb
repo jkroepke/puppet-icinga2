@@ -77,9 +77,9 @@ describe 'icinga2::object::apply_service', :type => :define do
             :content => /apply Service "check_http"/,
           }) }
       it { should contain_file(object_file).with_content(/^\s*import "generic-service"$/) }
-      it { should contain_file(object_file).with_content(/^\s*check_command = "check_http"/) }
-      it { should contain_file(object_file).with_content(/^\s*vars \+= config/) }
-      it { should contain_file(object_file).with_content(/^\s*if \(host.vars.notification_type == "sms"\) \{\n\s+command = "sms-host-notification"\n\s+\} else \{\n\s+command = "mail-host-notification"\n\s+\}/) }
+      it { should contain_file(object_file).with_content(/^\s*check_command = "check_http"$/) }
+      it { should contain_file(object_file).with_content(/^\s*vars \+= config$/) }
+      it { should contain_file(object_file).with_content(/^\s*if \(host.vars.notification_type == "sms"\) \{\n\s+command = "sms-host-notification"\n\s+\} else \{\n\s+command = "mail-host-notification"\n\s+\}$/) }
     end
     context "on #{name} with invalid custom_append parameter" do
       let :facts do
