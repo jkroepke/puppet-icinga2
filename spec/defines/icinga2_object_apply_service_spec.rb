@@ -16,10 +16,10 @@ describe 'icinga2::object::apply_service', :type => :define do
       object_file = '/etc/icinga2/objects/applys/check_http.conf'
       it { should contain_icinga2__object__apply_service('check_http') }
       it { should contain_file(object_file).with({
-            :ensure => 'file',
-            :path => '/etc/icinga2/objects/applys/check_http.conf',
-            :content => /apply Service "check_http"/,
-          }) }
+                                                     :ensure => 'file',
+                                                     :path => '/etc/icinga2/objects/applys/check_http.conf',
+                                                     :content => /apply Service "check_http"/,
+                                                 }) }
       it { should contain_file(object_file).with_content(/^\s*import "generic-service"$/) }
       it { should_not contain_file(object_file).with_content(/^\s*check_command = "check_http"/) }
 
@@ -29,9 +29,9 @@ describe 'icinga2::object::apply_service', :type => :define do
         facts
       end
       let :params do
-      {
-          :custom_prepend =>  ['vars \+= config']
-      }
+        {
+            :custom_prepend =>  ['vars += config']
+        }
       end
       let :pre_condition do
         "include 'icinga2'"
@@ -42,10 +42,10 @@ describe 'icinga2::object::apply_service', :type => :define do
       object_file = '/etc/icinga2/objects/applys/check_http.conf'
       it { should contain_icinga2__object__apply_service('check_http') }
       it { should contain_file(object_file).with({
-            :ensure => 'file',
-            :path => '/etc/icinga2/objects/applys/check_http.conf',
-            :content => /apply Service "check_http"/,
-          }) }
+                                                     :ensure => 'file',
+                                                     :path => '/etc/icinga2/objects/applys/check_http.conf',
+                                                     :content => /apply Service "check_http"/,
+                                                 }) }
       it { should contain_file(object_file).with_content(/^\s*import "generic-service"$/) }
       it { should contain_file(object_file).with_content(/^\s*check_command = "check_http"/) }
       it { should contain_file(object_file).with_content(/^\s*vars \+= config/) }
@@ -55,13 +55,13 @@ describe 'icinga2::object::apply_service', :type => :define do
         facts
       end
       let :params do
-      {
-          :custom_prepend => ['if (host.vars.notification_type == "sms") {
+        {
+            :custom_prepend => ['if (host.vars.notification_type == "sms") {
          command = "sms-host-notification"
         } else {
          command = "mail-host-notification"
-        }', 'vars \+= config']
-      }
+        }', 'vars += config']
+        }
       end
       let :pre_condition do
         "include 'icinga2'"
@@ -72,10 +72,10 @@ describe 'icinga2::object::apply_service', :type => :define do
       object_file = '/etc/icinga2/objects/applys/check_http.conf'
       it { should contain_icinga2__object__apply_service('check_http') }
       it { should contain_file(object_file).with({
-            :ensure => 'file',
-            :path => '/etc/icinga2/objects/applys/check_http.conf',
-            :content => /apply Service "check_http"/,
-          }) }
+                                                     :ensure => 'file',
+                                                     :path => '/etc/icinga2/objects/applys/check_http.conf',
+                                                     :content => /apply Service "check_http"/,
+                                                 }) }
       it { should contain_file(object_file).with_content(/^\s*import "generic-service"$/) }
       it { should contain_file(object_file).with_content(/^\s*check_command = "check_http"$/) }
       it { should contain_file(object_file).with_content(/^\s*vars \+= config$/) }
@@ -86,9 +86,9 @@ describe 'icinga2::object::apply_service', :type => :define do
         facts
       end
       let :params do
-      {
-          :custom_prepend =>  'invalid'
-      }
+        {
+            :custom_prepend =>  'invalid'
+        }
       end
       let :pre_condition do
         "include 'icinga2'"
