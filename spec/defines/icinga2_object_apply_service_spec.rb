@@ -30,7 +30,7 @@ describe 'icinga2::object::apply_service', :type => :define do
       end
       let :params do
       {
-        :custom_prepend => ['vars += config']
+          custom_prepend: ['vars \+= config']
       }
       end
       let :pre_condition do
@@ -48,7 +48,7 @@ describe 'icinga2::object::apply_service', :type => :define do
           }) }
       it { should contain_file(object_file).with_content(/^\s*import "generic-service"$/) }
       it { should contain_file(object_file).with_content(/^\s*check_command = "check_http"/) }
-      it { should contain_file(object_file).with_content(/^\s*vars += config/) }
+      it { should contain_file(object_file).with_content(/^\s*vars \+= config/) }
     end
     context "on #{name} with custom_append parameter" do
       let :facts do
@@ -56,11 +56,11 @@ describe 'icinga2::object::apply_service', :type => :define do
       end
       let :params do
       {
-        :custom_prepend => ['if (host.vars.notification_type == "sms") {
+          custom_prepend: ['if (host.vars.notification_type == "sms") {
          command = "sms-host-notification"
         } else {
          command = "mail-host-notification"
-        }', 'vars += config']
+        }', 'vars \+= config']
       }
       end
       let :pre_condition do
@@ -78,8 +78,8 @@ describe 'icinga2::object::apply_service', :type => :define do
           }) }
       it { should contain_file(object_file).with_content(/^\s*import "generic-service"$/) }
       it { should contain_file(object_file).with_content(/^\s*check_command = "check_http"/) }
-      it { should contain_file(object_file).with_content(/^\s*vars += config/) }
-      it { should contain_file(object_file).with_content(/^\s*if (host.vars.notification_type == "sms") \{\n\s+command = "sms-host-notification"\n\s+\} else \{\n\s+command = "mail-host-notification"\n\s+\}/) }
+      it { should contain_file(object_file).with_content(/^\s*vars \+= config/) }
+      it { should contain_file(object_file).with_content(/^\s*if \(host.vars.notification_type == "sms"\) \{\n\s+command = "sms-host-notification"\n\s+\} else \{\n\s+command = "mail-host-notification"\n\s+\}/) }
     end
     context "on #{name} with invalid custom_append parameter" do
       let :facts do
@@ -87,7 +87,7 @@ describe 'icinga2::object::apply_service', :type => :define do
       end
       let :params do
       {
-        :custom_prepend => 'invalid'
+          custom_prepend: 'invalid'
       }
       end
       let :pre_condition do
