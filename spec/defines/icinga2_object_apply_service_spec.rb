@@ -30,7 +30,7 @@ describe 'icinga2::object::apply_service', :type => :define do
       end
       let :params do
       {
-          custom_prepend: ['vars \+= config']
+          :custom_prepend =>  ['vars \+= config']
       }
       end
       let :pre_condition do
@@ -56,7 +56,7 @@ describe 'icinga2::object::apply_service', :type => :define do
       end
       let :params do
       {
-          custom_prepend: ['if (host.vars.notification_type == "sms") {
+          :custom_prepend => ['if (host.vars.notification_type == "sms") {
          command = "sms-host-notification"
         } else {
          command = "mail-host-notification"
@@ -87,7 +87,7 @@ describe 'icinga2::object::apply_service', :type => :define do
       end
       let :params do
       {
-          custom_prepend: 'invalid'
+          :custom_prepend =>  'invalid'
       }
       end
       let :pre_condition do
