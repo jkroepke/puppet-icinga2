@@ -21,7 +21,7 @@ describe 'icinga2::object::apply_service', :type => :define do
                                                      :content => /apply Service "check_http"/,
                                                  }) }
       it { should contain_file(object_file).with_content(/^\s*import "generic-service"$/) }
-      it { should_not contain_file(object_file).with_content(/^\s*display_name = "check_http"$/) }
+      it { should contain_file(object_file).with_content(/^\s*display_name = "check_http"$/) }
 
     end
     context "on #{name} with custom_prepend parameter" do
